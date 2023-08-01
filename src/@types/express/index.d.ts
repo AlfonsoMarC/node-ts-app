@@ -1,3 +1,4 @@
+import { IUserModel } from "@/types/models/user";
 import { Schema } from "mongoose";
 
 // to make the file a module and avoid the TypeScript error
@@ -7,6 +8,7 @@ declare global {
   namespace Express {
     export interface Request {
       uid: Schema.Types.ObjectId;
+      authUser: IUserModel;
     }
   }
 }

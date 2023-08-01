@@ -1,9 +1,11 @@
-import { Document } from "mongoose";
+import { Document, Types } from "mongoose";
 
-export default interface IUser {
+export interface IUser {
   username: string;
   email: string;
   password: string;
+  role: string;
+  uid: Types.ObjectId;
 }
 
 export interface IUserModel extends IUser, Document {}

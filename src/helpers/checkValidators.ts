@@ -1,6 +1,7 @@
 import Configuration from "@/models/Configuration";
 import { ErrorMessages } from "@/constants/checkErrorsMessages";
 import User from "@/models/User";
+import { UserRoles } from "@/constants/userRoles";
 
 const { INTERNAL_SERVER_ERROR } = ErrorMessages;
 
@@ -14,12 +15,12 @@ const _getConfigRoles = async () => {
   }
 };
 
-export const checkHaskRole = async (role: string) => {
-  if (!role) {
-    throw new Error("The user has no role");
+export const checkHasValidRole = async (role: string) => {
+  if (role === UserRoles.ADMIN) {
+    throw new Error(`${role} role is not allowed`);
   }
   const configRoles = await _getConfigRoles();
-  if (!configRoles?.includes(role)) {
+  if (role && !configRoles?.includes(role)) {
     throw new Error(`${role} is not a valid role`);
   }
 };

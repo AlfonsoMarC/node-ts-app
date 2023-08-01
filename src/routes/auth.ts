@@ -2,8 +2,11 @@ import { Router, RequestHandler } from "express";
 import { loginController, registerController } from "@/controllers/auth";
 import { check } from "express-validator";
 import { checkValidator } from "@/middlewares/checkValidator";
-import { checkEmailExists, checkHaskRole, checkUsernameExists } from "@/helpers/checkValidators";
-import { validateJWT } from "@/middlewares/validateJwt";
+import {
+  checkEmailExists,
+  checkHasValidRole,
+  checkUsernameExists
+} from "@/helpers/checkValidators";
 
 const router = Router();
 
@@ -20,11 +23,10 @@ router.post(
 router.post(
   "/register",
   [
-    validateJWT,
     check("email", "The email is not valid").isEmail(),
     check("username", "Username is required").not().isEmpty(),
     check("password", "Password is required").not().isEmpty(),
-    check("role").custom(checkHaskRole),
+    check("role").custom(checkHasValidRole),
     check("email").custom(checkEmailExists),
     check("username").custom(checkUsernameExists),
     checkValidator

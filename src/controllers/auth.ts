@@ -1,17 +1,23 @@
 import { Request, Response, NextFunction } from "express";
-import { IAuthResponse, registerService, loginService } from "@/services/auth";
-import IUser from "@/types/models/user";
+import {
+  IAuthResponse,
+  ICreateUserBody,
+  ILoginBody,
+  createUserService,
+  loginService
+} from "@/services/auth";
 import { HttpStatusCodes } from "@/constants/httpStatusCodes";
 
 const { HTTP_OK, HTTP_CREATED } = HttpStatusCodes;
 
 export const registerController = async (req: Request, res: Response, next: NextFunction) => {
-  const { username, email, password }: IUser = req.body;
+  const { username, email, password, role }: ICreateUserBody = req.body;
   try {
-    const { user, token }: IAuthResponse = await registerService({
+    const { user, token }: IAuthResponse = await createUserService({
       username,
       email,
-      password
+      password,
+      role
     });
     return res.status(HTTP_CREATED).json({ user, token });
   } catch (err) {
@@ -20,7 +26,7 @@ export const registerController = async (req: Request, res: Response, next: Next
 };
 
 export const loginController = async (req: Request, res: Response, next: NextFunction) => {
-  const { email, password }: IUser = req.body;
+  const { email, password }: ILoginBody = req.body;
   try {
     const { user, token }: IAuthResponse = await loginService({
       email,

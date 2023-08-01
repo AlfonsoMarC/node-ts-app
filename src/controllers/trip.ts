@@ -1,12 +1,12 @@
 import { HttpStatusCodes } from "@/constants/httpStatusCodes";
 import { createTripService, getTripsServices } from "@/services/trip";
-import { ITripRequestBody } from "@/types/models/trip";
+import { ITrip } from "@/types/models/trip";
 import { Request, Response, NextFunction } from "express";
 
 const { HTTP_CREATED, HTTP_OK } = HttpStatusCodes;
 
 export const createTripController = async (req: Request, res: Response, next: NextFunction) => {
-  const { name, startDate, endDate }: ITripRequestBody = req.body;
+  const { name, startDate, endDate }: ITrip = req.body;
   const { uid } = req;
   const trip = { name, startDate, endDate, uid };
   try {

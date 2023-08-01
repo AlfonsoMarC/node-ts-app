@@ -7,7 +7,7 @@ const router = Router();
 
 router.post(
   "/",
-  validateJWT,
+  validateJWT as RequestHandler,
   check("name", "Trip name is required").not().isEmpty(),
   createTripController as RequestHandler
 );

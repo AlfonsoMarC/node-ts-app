@@ -1,22 +1,25 @@
 import { Types } from "mongoose";
-import IUser from "@/types/models/user";
 import User from "@/models/User";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { CustomError } from "@/models/CustomError";
 import { HttpStatusCodes } from "@/constants/httpStatusCodes";
+import { IUser } from "@/types/models/user";
 
-export interface IAuthResponse {
-  user: { username: string; email: string; uid: Types.ObjectId };
-  token: string;
+const { HTTP_FORBIDDEN } = HttpStatusCodes;
+
+export interface ICreateUserBody extends Omit<IUser, "role" | "uid"> {
+  role?: string;
 }
 
-interface IUserLogin {
+export interface ILoginBody {
   email: string;
   password: string;
 }
-
-const { HTTP_FORBIDDEN } = HttpStatusCodes;
+export interface IAuthResponse {
+  user: { username: string; email: string; uid: Types.ObjectId; role: string };
+  token: string;
+}
 
 const generateJWT = (uid: Types.ObjectId, username: string): Promise<string> => {
   return new Promise((resolve, reject) => {
@@ -37,12 +40,13 @@ const generateJWT = (uid: Types.ObjectId, username: string): Promise<string> => 
   });
 };
 
-export const registerService = async ({
+export const createUserService = async ({
   username,
   email,
-  password
-}: IUser): Promise<IAuthResponse> => {
-  const user = new User({ username, email, password });
+  password,
+  role
+}: ICreateUserBody): Promise<IAuthResponse> => {
+  const user = new User({ username, email, password, role });
 
   // Encrypt password
   const salt = bcrypt.genSaltSync();
@@ -52,10 +56,10 @@ export const registerService = async ({
   // Generate JWT
   const token = await generateJWT(user._id, user.username);
 
-  return { user: { username, email, uid: user._id }, token };
+  return { user: { username, email, uid: user._id, role }, token };
 };
 
-export const loginService = async ({ email, password }: IUserLogin): Promise<IAuthResponse> => {
+export const loginService = async ({ email, password }: ILoginBody): Promise<IAuthResponse> => {
   const user = await User.findOne({ email });
 
   if (!user) {
@@ -65,6 +69,6 @@ export const loginService = async ({ email, password }: IUserLogin): Promise<IAu
 
   if (isValidPassword) {
     const token = await generateJWT(user._id, user.username);
-    return { user: { username: user.username, email, uid: user._id }, token };
+    return { user: { username: user.username, email, uid: user._id, role: user.role }, token };
   }
 };
