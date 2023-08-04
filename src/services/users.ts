@@ -16,8 +16,20 @@ export interface ILoginBody {
   email: string;
   password: string;
 }
+
+export interface IUpdateUserBody extends ICreateUserBody {
+  uid?: string;
+}
+
+export interface IUserResponse {
+  username: string;
+  email: string;
+  uid: Types.ObjectId;
+  role: string;
+}
+
 export interface IAuthResponse {
-  user: { username: string; email: string; uid: Types.ObjectId; role: string };
+  user: IUserResponse;
   token: string;
 }
 
@@ -71,4 +83,20 @@ export const loginService = async ({ email, password }: ILoginBody): Promise<IAu
     const token = await generateJWT(user._id, user.username);
     return { user: { username: user.username, email, uid: user._id, role: user.role }, token };
   }
+};
+
+export const updateUserService = async ({
+  email,
+  username,
+  password,
+  role,
+  uid
+}: IUpdateUserBody): Promise<IUserResponse> => {
+  const updatedUser = await User.findByIdAndUpdate(
+    uid,
+    { email, username, password, role },
+    { returnDocument: "before" }
+  );
+  delete updatedUser.password;
+  return updatedUser;
 };

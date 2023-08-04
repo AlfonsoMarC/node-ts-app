@@ -1,5 +1,9 @@
 import { RequestHandler, Router } from "express";
-import { createUserController, deleteUserController } from "@/controllers/users";
+import {
+  createUserController,
+  deleteUserController,
+  updateUserController
+} from "@/controllers/users";
 import { validateIsAdminUser } from "@/middlewares/validateIsAdminUser";
 import { validateJWT } from "@/middlewares/validateJwt";
 import { check } from "express-validator";
@@ -29,6 +33,24 @@ router.post(
     checkValidator
   ],
   createUserController as RequestHandler
+);
+
+router.put(
+  "/:id",
+  [
+    asyncMiddleware(validateJWT),
+    validateIsAdminUser,
+    check("id", "Invalid id").isMongoId(),
+    check("email", "The email is not valid").isEmail(),
+    check("username", "Username is required").not().isEmpty(),
+    check("password", "Password is required").not().isEmpty(),
+    check("role").custom(role => checkHasValidRole({ role, allowAdminUser: true })),
+    check("email").custom(checkEmailExists),
+    check("username").custom(checkUsernameExists),
+    checkValidator,
+    asyncMiddleware(validateModelExistsById(User))
+  ],
+  updateUserController as RequestHandler
 );
 
 router.delete(

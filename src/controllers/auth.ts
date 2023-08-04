@@ -5,7 +5,7 @@ import {
   ILoginBody,
   createUserService,
   loginService
-} from "@/services/auth";
+} from "@/services/users";
 import { HttpStatusCodes } from "@/constants/httpStatusCodes";
 
 const { HTTP_OK, HTTP_CREATED } = HttpStatusCodes;

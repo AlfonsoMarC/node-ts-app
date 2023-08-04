@@ -1,6 +1,11 @@
 import { HttpStatusCodes } from "@/constants/httpStatusCodes";
 import User from "@/models/User";
-import { ICreateUserBody, createUserService } from "@/services/auth";
+import {
+  ICreateUserBody,
+  IUpdateUserBody,
+  createUserService,
+  updateUserService
+} from "@/services/users";
 import { NextFunction, Request, Response } from "express";
 
 export const createUserController = async (req: Request, res: Response, next: NextFunction) => {
@@ -18,6 +23,17 @@ export const deleteUserController = async (req: Request, res: Response, next: Ne
   try {
     await User.findByIdAndDelete(id);
     return res.status(HttpStatusCodes.HTTP_NO_CONTENT).end();
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const updateUserController = async (req: Request, res: Response, next: NextFunction) => {
+  const { email, username, password, role }: IUpdateUserBody = req.body;
+  const { id } = req.params;
+  try {
+    const updatedUser = await updateUserService({ email, username, password, role, uid: id });
+    return res.status(HttpStatusCodes.HTTP_OK).json(updatedUser);
   } catch (err) {
     next(err);
   }
