@@ -26,7 +26,7 @@ router.post(
     check("email", "The email is not valid").isEmail(),
     check("username", "Username is required").not().isEmpty(),
     check("password", "Password is required").not().isEmpty(),
-    check("role").custom(checkHasValidRole),
+    check("role").custom(role => checkHasValidRole({ role })),
     check("email").custom(checkEmailExists),
     check("username").custom(checkUsernameExists),
     checkValidator

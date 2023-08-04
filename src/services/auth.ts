@@ -56,7 +56,7 @@ export const createUserService = async ({
   // Generate JWT
   const token = await generateJWT(user._id, user.username);
 
-  return { user: { username, email, uid: user._id, role }, token };
+  return { user: { username, email, uid: user._id, role: user.role }, token };
 };
 
 export const loginService = async ({ email, password }: ILoginBody): Promise<IAuthResponse> => {

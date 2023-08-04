@@ -3,6 +3,7 @@ import express, { Application } from "express";
 import cors from "cors";
 import auth from "./routes/auth";
 import trips from "./routes/trips";
+import users from "./routes/users";
 import dbConnection from "./database/database";
 import { errorHandler } from "./helpers/errorHandler";
 
@@ -38,6 +39,7 @@ class Server {
   routes() {
     this.app.use("/api/v1/auth", auth);
     this.app.use("/api/v1/trips", trips);
+    this.app.use("/api/v1/users", users);
   }
 
   handleError() {

@@ -3,6 +3,7 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 import { Schema } from "mongoose";
 import { CustomError } from "@/models/CustomError";
 import User from "@/models/User";
+import { HttpStatusCodes } from "@/constants/httpStatusCodes";
 
 interface IDecodedJwtPayload extends JwtPayload {
   uid: Schema.Types.ObjectId;
@@ -17,6 +18,9 @@ export const validateJWT = async (req: Request, res: Response, next: NextFunctio
     req.authUser = authUser;
     next();
   } catch {
-    throw new CustomError({ message: "You are not authenticated", statusCode: 401 });
+    throw new CustomError({
+      message: "You are not authenticated",
+      statusCode: HttpStatusCodes.HTTP_UNAUTHORIZED
+    });
   }
 };

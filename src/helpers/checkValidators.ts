@@ -15,8 +15,14 @@ const _getConfigRoles = async () => {
   }
 };
 
-export const checkHasValidRole = async (role: string) => {
-  if (role === UserRoles.ADMIN) {
+export const checkHasValidRole = async ({
+  role,
+  allowAdminUser
+}: {
+  role: string;
+  allowAdminUser?: boolean;
+}) => {
+  if (!allowAdminUser && role === UserRoles.ADMIN) {
     throw new Error(`${role} role is not allowed`);
   }
   const configRoles = await _getConfigRoles();
