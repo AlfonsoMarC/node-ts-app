@@ -10,7 +10,11 @@ import { HttpStatusCodes } from "@/constants/httpStatusCodes";
 
 const { HTTP_OK, HTTP_CREATED } = HttpStatusCodes;
 
-export const registerController = async (req: Request, res: Response, next: NextFunction) => {
+export const registerController = async (
+  req: Request,
+  res: Response<IAuthResponse>,
+  next: NextFunction
+) => {
   const { username, email, password }: ICreateUserBody = req.body;
   try {
     const { user, token }: IAuthResponse = await createUserService({
@@ -24,7 +28,11 @@ export const registerController = async (req: Request, res: Response, next: Next
   }
 };
 
-export const loginController = async (req: Request, res: Response, next: NextFunction) => {
+export const loginController = async (
+  req: Request,
+  res: Response<IAuthResponse>,
+  next: NextFunction
+) => {
   const { email, password }: ILoginBody = req.body;
   try {
     const { user, token }: IAuthResponse = await loginService({

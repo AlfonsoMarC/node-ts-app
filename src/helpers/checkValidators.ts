@@ -8,7 +8,7 @@ const { INTERNAL_SERVER_ERROR } = ErrorMessages;
 const _getConfigRoles = async () => {
   try {
     const rolesConfiguration = await Configuration.findOne({ name: "roles" });
-    const configRoles = rolesConfiguration.value as string[];
+    const configRoles = rolesConfiguration?.value as string[];
     return configRoles;
   } catch {
     throw new Error(INTERNAL_SERVER_ERROR);

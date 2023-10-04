@@ -11,9 +11,18 @@ interface IDecodedJwtPayload extends JwtPayload {
 
 export const validateJWT = async (req: Request, res: Response, next: NextFunction) => {
   const token = req.header("x-token");
+  const secret = process.env.SECRET_JWT_SEED;
+
   try {
-    const { uid } = jwt.verify(token, process.env.SECRET_JWT_SEED) as IDecodedJwtPayload;
+    if (!token || !secret) {
+      throw new Error();
+    }
+    const { uid } = jwt.verify(token, secret) as IDecodedJwtPayload;
     const authUser = await User.findById(uid);
+    if (!authUser) {
+      throw new Error();
+    }
+
     req.uid = uid;
     req.authUser = authUser;
     next();

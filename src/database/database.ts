@@ -2,8 +2,12 @@
 import mongoose from "mongoose";
 
 const dbConnection = async () => {
+  const dbcnn = process.env.DB_CNN;
   try {
-    await mongoose.connect(process.env.DB_CNN);
+    if (!dbcnn) {
+      throw new Error();
+    }
+    await mongoose.connect(dbcnn);
     console.log("DB online");
   } catch (error) {
     console.log(error);

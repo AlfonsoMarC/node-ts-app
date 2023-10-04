@@ -38,7 +38,7 @@ const generateJWT = (uid: Types.ObjectId, username: string): Promise<string> => 
     const payload = { uid, username };
     jwt.sign(
       payload,
-      process.env.SECRET_JWT_SEED,
+      process.env.SECRET_JWT_SEED ?? "",
       {
         expiresIn: "2h"
       },
@@ -46,7 +46,7 @@ const generateJWT = (uid: Types.ObjectId, username: string): Promise<string> => 
         if (err) {
           reject("Token could not been generated");
         }
-        resolve(token);
+        resolve(token ?? "");
       }
     );
   });
@@ -82,6 +82,8 @@ export const loginService = async ({ email, password }: ILoginBody): Promise<IAu
   if (isValidPassword) {
     const token = await generateJWT(user._id, user.username);
     return { user: { username: user.username, email, uid: user._id, role: user.role }, token };
+  } else {
+    throw new Error();
   }
 };
 
@@ -95,8 +97,16 @@ export const updateUserService = async ({
   const updatedUser = await User.findByIdAndUpdate(
     uid,
     { email, username, password, role },
-    { returnDocument: "before" }
+    { returnDocument: "after" }
   );
-  delete updatedUser.password;
-  return updatedUser;
+  if (updatedUser) {
+    return {
+      username: updatedUser.username,
+      email: updatedUser.email,
+      uid: updatedUser._id,
+      role: updatedUser.role
+    };
+  } else {
+    throw new Error();
+  }
 };

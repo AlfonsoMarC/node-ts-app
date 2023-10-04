@@ -8,12 +8,12 @@ import dbConnection from "./database/database";
 import { errorHandler } from "./helpers/errorHandler";
 
 class Server {
-  public app: Application;
+  private app: Application;
   public port: string;
 
   constructor() {
     this.app = express();
-    this.port = process.env.PORT;
+    this.port = process.env.PORT || "4000";
 
     void this.conectDB();
     this.middlewares();

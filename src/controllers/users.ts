@@ -3,12 +3,17 @@ import User from "@/models/User";
 import {
   ICreateUserBody,
   IUpdateUserBody,
+  IUserResponse,
   createUserService,
   updateUserService
 } from "@/services/users";
 import { NextFunction, Request, Response } from "express";
 
-export const createUserController = async (req: Request, res: Response, next: NextFunction) => {
+export const createUserController = async (
+  req: Request,
+  res: Response<IUserResponse>,
+  next: NextFunction
+) => {
   const { email, username, password, role }: ICreateUserBody = req.body;
   try {
     const { user } = await createUserService({ email, username, password, role });
@@ -28,7 +33,11 @@ export const deleteUserController = async (req: Request, res: Response, next: Ne
   }
 };
 
-export const updateUserController = async (req: Request, res: Response, next: NextFunction) => {
+export const updateUserController = async (
+  req: Request,
+  res: Response<IUserResponse>,
+  next: NextFunction
+) => {
   const { email, username, password, role }: IUpdateUserBody = req.body;
   const { id } = req.params;
   try {

@@ -9,7 +9,7 @@ export interface ICustomError {
 export class CustomError extends Error {
   msg: string;
   statusCode: number;
-  errors: ValidationError[];
+  errors?: ValidationError[];
 
   constructor(props: ICustomError) {
     const { message, statusCode, errors } = props;
